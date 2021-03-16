@@ -74,15 +74,23 @@ class Neural(object):
         return lr * (errors * (derivatives))
 
     def adjust_weights(self, weights, activation, deltas):
+        #print("LEN ACT: ", len(activation))
+        #print("LEN DEL: ", len(deltas))
+        adj = []
+        #print("BEFORE ADJ: ", adj)
+        for n in range(0, len(activation) - 1):
+            for d in range(0, len(deltas)):
+                adj.append(activation[n] * deltas[d])
+        #print("AFTER ADJ: ", adj)
+
         adjustment = (activation * deltas)
         #print("ACTIVATION: ", activation)
         #print("DELTAS: ", deltas)
         #print("ADJUSTMENT: ", adjustment)
 
         for i in range(0, len(weights)):
-            for j in range(0, len(adjustment) - 1):
+            for j in range(0, len(weights[i])):
                 weights[i] = weights[i][j] + adjustment[i]
-
         return weights
 
     def adjust_bias(self, bias, delta):
@@ -184,9 +192,9 @@ insert = [
     [np.array([0, 1]), [0]],
     [np.array([0.1, 0.8]), [0]],
     [np.array([1, 0]), [1]],
+    [np.array([1, 0.8]), [1]],
     [np.array([0.1, 0.2]), [0]],
     [np.array([0.2, 0.1]), [1]],
-    [np.array([1, 0.8]), [1]],
     [np.array([0.9, 0.1]), [1]]
 ]
 
