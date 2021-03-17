@@ -10,12 +10,12 @@ class Neural(object):
         self.out_layer_len = layers[0]
 
         for layer in range(0, len(layers)):
-            weights_matrix = np.random.randn(self.activation_layer_len, self.out_layer_len)
-            #weights_matrix = np.ones((self.activation_layer_len, self.out_layer_len))
+            #weights_matrix = np.random.randn(self.activation_layer_len, self.out_layer_len)
+            weights_matrix = np.ones((self.activation_layer_len, self.out_layer_len))
             self.vector_matrix.append(weights_matrix)
 
-            bias_array = np.random.randn(self.out_layer_len)
-            #bias_array = np.ones(self.out_layer_len)
+            #bias_array = np.random.randn(self.out_layer_len)
+            bias_array = np.ones(self.out_layer_len)
             self.vector_bias.append(bias_array)
 
             if layer != len(layers) - 1:
@@ -74,23 +74,49 @@ class Neural(object):
         return lr * (errors * (derivatives))
 
     def adjust_weights(self, weights, activation, deltas):
-        #print("LEN ACT: ", len(activation))
-        #print("LEN DEL: ", len(deltas))
         adj = []
-        #print("BEFORE ADJ: ", adj)
-        for n in range(0, len(activation) - 1):
-            for d in range(0, len(deltas)):
-                adj.append(activation[n] * deltas[d])
-        #print("AFTER ADJ: ", adj)
 
-        adjustment = (activation * deltas)
         #print("ACTIVATION: ", activation)
         #print("DELTAS: ", deltas)
-        #print("ADJUSTMENT: ", adjustment)
+
+        if len(deltas) != 1:
+            for d in range(0, len(deltas)):
+                adj.append(deltas[d] * activation)
+        else:
+            adj.append(deltas * activation)
+
+        #print("ADJ: ", deltas * activation)
+        #print("ADJ: ", adj)
+        #print("LEN WEIGHTS: ", len(weights))
+
+        #adjustment = (deltas * activation)
 
         for i in range(0, len(weights)):
+            #print("WEIGHTS[i]: ", weights[i])
+            #print("LEN WEIGHTS[i]: ", len(weights[i]))
+            '''
+            if (len(weights[i]) == 1) or (len(weights[i]) == 0):
+                print("-------------------------------")
+                print("i: ", i)
+                print("j0: ", 0)
+                print("WEIGHTS: ", weights)
+                print("ADJ IN FOR: ", adj)
+                print("WEIGHTS i j: ", weights[i][0])
+                print("adj[0][i]: ", adj[0][i])
+                print("-------------------------------")
+                weights[i][0] = weights[i][0] + adj[0][i]
+            '''
             for j in range(0, len(weights[i])):
-                weights[i] = weights[i][j] + adjustment[i]
+                #print("-------------------------------")
+                #print("i: ", i)
+                #print("j: ", j)
+                #print("WEIGHTS: ", weights)
+                #print("ADJ IN FOR: ", adj)
+                #print("WEIGHTS i j: ", weights[i][j])
+                #print("adj[j][i]: ", adj[j][i])
+                #print("-------------------------------")
+                weights[i][j] = weights[i][j] + adj[j][i]
+        #print("WEIGHTS AFTER I: ", weights)
         return weights
 
     def adjust_bias(self, bias, delta):
@@ -125,7 +151,7 @@ class Neural(object):
                                                             hidden_deltas)
 
             #print("Before bias: ", self.vector_bias)
-            self.vector_bias[k - 1] = self.adjust_bias(self.vector_bias[k -1], hidden_deltas)
+            self.vector_bias[k - 1] = self.adjust_bias(self.vector_bias[k - 1], hidden_deltas)
             #print("After bias: ", self.vector_bias)
             prev_delta = hidden_deltas
 
@@ -183,8 +209,10 @@ print(NN.vector_output[2])
 NN.feed_forward([1, 1], layers, [11111])
 print(NN.vector_output[2])
 '''
+
+#'''
 input_size = 2
-layers = [2, 1]
+layers = [3, 1]
 lr = 0.8
 NN = Neural()
 
@@ -220,3 +248,4 @@ NN.feed_forward([0.3, 0.6], layers, [11111])
 print(NN.vector_output[len(NN.vector_output)-1])
 NN.feed_forward([0.1, 0.3], layers, [11111])
 print(NN.vector_output[len(NN.vector_output)-1])
+#'''
