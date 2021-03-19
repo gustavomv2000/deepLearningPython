@@ -3,7 +3,10 @@ import random
 import datetime
 
 class Neural(object):
-    def __init__(self):
+    def __init__(self, input_size, layers, lr):
+        self.input_size = input_size
+        self.layers = layers
+        self.lr = lr
         self.vector_matrix = []
         self.vector_bias = []
         self.vector_output = []
@@ -23,10 +26,10 @@ class Neural(object):
                 self.out_layer_len = layers[layer+1]
                 self.activation_layer_len = layers[layer]
 
-        print("Initial Weights: ", self.vector_matrix)
-        print("Initial Bias: ", self.vector_bias)
+        #print("Initial Weights: ", self.vector_matrix)
+        #print("Initial Bias: ", self.vector_bias)
 
-    def feed_forward(self, data_input=[], layers_size=[], desired_output=[]):
+    def feed_forward(self, data_input=[], layers_size=[]):
         self.current_activation = data_input.copy()
         self.vector_output = []
         self.vector_output.append(data_input)
@@ -59,7 +62,7 @@ class Neural(object):
         return self.sigmoid_array(output, deriv=True)
 
     def calculate_deltas(self, errors, derivatives):
-        return lr * (errors * (derivatives))
+        return self.lr * (errors * (derivatives))
 
     def adjust_weights(self, weights, activation, deltas):
         adj = []
@@ -77,7 +80,7 @@ class Neural(object):
         return weights
 
     def adjust_bias(self, bias, delta):
-        return np.add(bias, lr * delta)
+        return np.add(bias, self.lr * delta)
 
     def backpropation(self, vector_output, expected, data):
         output_error = self.calculate_errors(vector_output[len(vector_output)-1], expected)
@@ -91,7 +94,7 @@ class Neural(object):
         self.vector_bias[len(self.vector_bias) - 1] = self.adjust_bias(self.vector_bias[len(self.vector_bias) - 1],
                                                                        output_delta)
         prev_delta = output_delta
-        for k in range(len(layers) - 1, 0, -1):
+        for k in range(len(self.layers) - 1, 0, -1):
             hidden_errors = prev_delta.dot(self.vector_matrix[k].T)
             hidden_derivatives = self.calculate_derivatives(self.vector_output[k])
             hidden_deltas = self.calculate_deltas(hidden_errors, hidden_derivatives)
@@ -107,16 +110,21 @@ class Neural(object):
         i = 0
         for data in data_inputs:
             for k in range(0, 1):
-                self.feed_forward(data[0], layers, data[1])
+                self.feed_forward(data[0], self.layers)
 
                 self.backpropation(self.vector_output, data[1], data[0]);
 
             i += 1
 
+
+
 '''
-input_size = 2
-layers = [2, 1]
-lr = 1
+input_size = 20
+layers = [10, 10, 1]
+lr = 0.05
+'''
+
+'''
 NN = Neural()
 data_in = [[[1, 0], [1]]]
 NN.train_neural(data_in)
@@ -157,7 +165,7 @@ NN.feed_forward([1, 1], layers, [11111])
 print(NN.vector_output[len(NN.vector_output)-1])
 '''
 
-#'''
+'''
 input_size = 2
 layers = [2, 1]
 lr = 0.4
@@ -204,7 +212,7 @@ NN.feed_forward([0.1, 0.3], layers, [11111])
 print(round(NN.vector_output[len(NN.vector_output)-1][0]))
 NN.feed_forward([0.01, 0.02], layers, [11111])
 print(round(NN.vector_output[len(NN.vector_output)-1][0]))
-#'''
+'''
 
 '''
 input_size = 2
