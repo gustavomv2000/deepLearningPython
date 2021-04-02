@@ -44,7 +44,7 @@ time_start = datetime.datetime.now()
 
 input_size = 30
 layers = [8, 2, 1]
-lr = 0.05
+lr = 0.5
 NN = IA.Neural(input_size, layers, lr)
 
 input_test = [11.67, 11.59, 11.59, 11.59, 11.56, 11.38, 11.39, 11.73, 11.73, 11.73, 11.44, 11.46, 11.71, 12.16, 12.13,
@@ -67,11 +67,19 @@ input_test_5 = [11.56, 11.38, 11.39, 11.73, 11.73, 11.73, 11.44, 11.46, 11.71, 1
                 11.81, 11.92, 11.61, 11.61, 11.61, 11.63, 11.45, 11.27, 11.04, 10.88, 10.61, 10.79, 10.81, 10.83, 10.83] #10.77
 input_test_5 = [x / max_value for x in input_test_5]
 
+#for j in data_inputs[0][0]:
+#    print('Data input: ', j * max_value)
+
+#print('Data expected: ', data_inputs[0][1] * max_value)
+
 #'''
-while NN.lr <= 1.02:
-    NN = IA.Neural(input_size, layers, NN.lr)
+#while NN.lr <= 1.02:
+iteration = 1
+error_final = 1
+while error_final > 0.01:
+    #NN = IA.Neural(input_size, layers, NN.lr)
     error_final = 0
-    for i in range(0, 100):
+    for i in range(0, 10):
         random.shuffle(data_inputs)
         NN.train_neural(data_inputs)
 
@@ -91,7 +99,9 @@ while NN.lr <= 1.02:
     #print('Error: ', error_final)
     print('ERROR: ', error_final/5)
     print('learning rate: ', NN.lr)
-    NN.lr += 0.05
+    print('Iteration: ', iteration)
+    iteration += 1
+    #NN.lr += 0.05
 #'''
 
 '''
